@@ -12,6 +12,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.*;
+
 import static spark.Spark.*;
 
 public class App {
@@ -26,7 +28,7 @@ public class App {
             System.out.println("Connected to DB successfully");
 
             statement.executeUpdate("DROP TABLE IF EXISTS symptoms");
-            statement.executeUpdate("CREATE TABLE symptoms (date INT, symptom CHAR(100)");
+            statement.executeUpdate("CREATE TABLE symptoms (date INT(8), symptom CHAR(100)");
             System.out.println("DB created");
             System.out.println("DB populated");
 
@@ -37,21 +39,31 @@ public class App {
         }
 
         //create endpoints for api
-        get("/api/historical-symptoms.json", (req, res) -> {
+        get("/api/get-historical-symptoms", (req, res) -> {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
             String orderSQLStatement = "SELECT * FROM symptoms WHERE date BETWEEN 'now' AND 'start of month'";
             ResultSet rs = statement.executeQuery(orderSQLStatement);
-            return true;
+            return convertToJson(rs);
         });
 
-//        post("/api/add-symptoms", (req, res) -> {
-//
-//            return dbInsert(symptoms);
-//        });
+        post("/api/add-symptoms", (req, res) -> {
+            JSONObject body = new JSONObject(req.body());
+
+            JSONArray symptomData = body.getJSONArray("symptoms");
+            ArrayList<String> symptoms = new ArrayList<>();
+            for (int i = 0; i < symptomData.length(); i++) {
+                String symptom = symptomData.getJSONObject(i).toString();
+                symptoms.add(symptom);
+            }
+
+            String date = body.getString("date");
+
+            return dbInsert(symptoms, date);
+        });
     }
 
-    private static void dbInsert(List<String> symptomsJson, String date) throws IOException, SQLException {
+    private static void dbInsert(ArrayList<String> symptomsJson, String date) throws IOException, SQLException {
         String sqlStatement = "INSERT OR IGNORE INTO movies VALUES(?, ?)";
         PreparedStatement statement = connection.prepareStatement(sqlStatement);
         for (String symptomJson: symptomsJson) {
@@ -60,6 +72,19 @@ public class App {
             statement.executeUpdate();
         }
 
+    }
+
+    private static String convertToJson(ResultSet rs) {
+        ArrayList<String> output = new ArrayList<>();
+        try {
+            while(rs.next()) {
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        Gson gson = new GsonBuilder().create();
+        return gson.toJson(output);
     }
 
 }
