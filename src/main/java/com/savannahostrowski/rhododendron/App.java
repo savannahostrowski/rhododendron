@@ -64,29 +64,22 @@ public class App {
         });
 
         post("/api/add-symptoms", (req, res) -> {
-            return true;
-//            JSONObject body = new JSONObject(req.body());
-//
-//            Object symptomData = body.get("symptoms");
-//            System.out.print(symptomData);
-////            ArrayList<String> symptoms = new ArrayList<>();
-////            for (int i = 0; i < symptomData.length(); i++) {
-////                String symptom = symptomData.getJSONObject(i).toString();
-////                symptoms.add(symptom);
-////            }
-//
-//            String date = body.getString("date");
-//
-////            dbInsert(symptoms, date);
+            JSONObject body = new JSONObject(req.body());
+            String symptoms = body.getString("symptoms").trim();
+            String[] symptomsAsArray = symptoms.split(",");
+            String date = body.getString("date");
+
+            dbInsert(symptomsAsArray, date);
 //            // Return success or error method
+            return true;
         });
     }
 
-    private static void dbInsert(ArrayList<String> symptomsJson, String date) throws IOException, SQLException {
+    private static void dbInsert(String[] symptoms, String date) throws IOException, SQLException {
         String sqlStatement = "INSERT OR IGNORE INTO symptoms VALUES(?, ?)";
         PreparedStatement statement = connection.prepareStatement(sqlStatement);
-        for (String symptomJson: symptomsJson) {
-            statement.setString(1, symptomJson);
+        for (String symptom: symptoms) {
+            statement.setString(1, symptom);
             statement.setString(2, date);
             statement.executeUpdate();
         }

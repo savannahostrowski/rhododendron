@@ -4,12 +4,12 @@
  * @return {Object} form data as an object literal
 **/
 
-const formToJSON = form => {
+const formToJSON = elements => {
     const today = new Date();
 
     const json = {};
     json["date"] = today.toISOString().substring(0, 10);
-    json["symptoms"] = form["symptoms"].value;
+    json["symptoms"] = form.elements["symptoms"].value;
 
     return json;
 };
