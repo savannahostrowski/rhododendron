@@ -4,18 +4,18 @@
  * @return {Object} form data as an object literal
 **/
 
-const formToJSON = elements => {
+const formToJSON = form => {
     const today = new Date();
 
     const json = {};
-    json['date'] = today.toISOString().substring(0, 10);
-    json['symptoms'] = elements["symptoms"].split(",");
+    json["date"] = today.toISOString().substring(0, 10);
+    json["symptoms"] = form["symptoms"].value;
 
     return json;
 };
 
 
-const handleFormSubmit = event => {
+const addSymptomData = event => {
     event.preventDefault();
 
     // Call our function to get the form data.
@@ -30,30 +30,30 @@ const handleFormSubmit = event => {
     http.send(JSON.stringify(json));
 };
 
-/** Checks that neither the element.name or element.value are empty
- * @param {Element} element   current element we are trying to check
- * @return {Bool}   true if the element is a valid input, false otherwise
- *
- **/
-const isValidElement = element => {
-    return element.name && element.value;
-};
-
 const getSymptomData = event => {
-    const today = new Date();
-    today.toISOString().substring(0, 10);
+    event.preventDefault();
+
+    // Generating today's date in YYYY-MM-DD format
+    const now = new Date();
+
+    const today = now.toISOString().substring(0, 10);
+
+    // Generating the date one month ago in YYYY-MM-DD format
     const rawDate30 = new Date();
     rawDate30.setDate(rawDate30.getDate() - 30);
-    const oneMonthAgo = rawDate30.toISOString();
+    const oneMonthAgo = rawDate30.toISOString().substring(0, 10);
 
 
     const http = new XMLHttpRequest();
     const url = "api/get-historical-symptoms?start=" + oneMonthAgo + "&end=" + today;
     http.open('GET', url, true);
     http.send();
-
-
 };
+
 const form = document.getElementsByClassName('symptoms-form')[0];
-form.addEventListener('submit', handleFormSubmit);
-// form.addEventListener('submit', getSymptomData);
+
+form.addEventListener('submit', addSymptomData);
+form.addEventListener('submit', getSymptomData);
+
+
+

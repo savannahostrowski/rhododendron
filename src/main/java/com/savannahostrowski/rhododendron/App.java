@@ -64,20 +64,21 @@ public class App {
         });
 
         post("/api/add-symptoms", (req, res) -> {
-            JSONObject body = new JSONObject(req.body());
-
-            JSONArray symptomData = body.getJSONArray("symptoms");
-            ArrayList<String> symptoms = new ArrayList<>();
-            for (int i = 0; i < symptomData.length(); i++) {
-                String symptom = symptomData.getJSONObject(i).toString();
-                symptoms.add(symptom);
-            }
-
-            String date = body.getString("date");
-
-            dbInsert(symptoms, date);
-            // Return success or error method
-            return null;
+            return true;
+//            JSONObject body = new JSONObject(req.body());
+//
+//            Object symptomData = body.get("symptoms");
+//            System.out.print(symptomData);
+////            ArrayList<String> symptoms = new ArrayList<>();
+////            for (int i = 0; i < symptomData.length(); i++) {
+////                String symptom = symptomData.getJSONObject(i).toString();
+////                symptoms.add(symptom);
+////            }
+//
+//            String date = body.getString("date");
+//
+////            dbInsert(symptoms, date);
+//            // Return success or error method
         });
     }
 
@@ -105,4 +106,7 @@ public class App {
         return gson.toJson(output);
     }
 
+
 }
+
+

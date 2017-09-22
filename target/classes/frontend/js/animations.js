@@ -20,9 +20,10 @@ $(document).ready(function() {
     });
 
     $('.input-button').click(function() {
-        $('.trends').fadeIn('slow');
+        $('.trends').show().fadeIn('slow');
         $('.symptoms').fadeOut('slow');
+        $('.input-area').val('');
 
-    })
+    });
 
 });
