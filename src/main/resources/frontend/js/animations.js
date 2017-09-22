@@ -5,6 +5,7 @@ $(document).ready(function() {
     });
 
     $('.feeling-bad').click(function() {
+        $('.input-area').val('');
         $('.symptoms').show().fadeIn('slow');
         $('.initial').fadeOut('slow');
     });
@@ -22,7 +23,6 @@ $(document).ready(function() {
     $('.input-button').click(function() {
         $('.trends').show().fadeIn('slow');
         $('.symptoms').fadeOut('slow');
-        $('.input-area').val('');
 
     });
 

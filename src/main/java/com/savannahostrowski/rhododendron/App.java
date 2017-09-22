@@ -51,15 +51,15 @@ public class App {
         //create endpoints for api
         get("/api/get-historical-symptoms", (req, res) -> {
             res.type("application/json");
-            String oneMonthAgoDate = req.params().get("end");
+            String oneMonthAgoDate = req.params().get("start");
             String todayDate = req.params().get("end");
             String historicalQuery = "SELECT * FROM symptoms WHERE date between ? AND ?";
             PreparedStatement sqlStatement = connection.prepareStatement(historicalQuery);
             sqlStatement.setString(1, todayDate);
             //get dates from javascript
             sqlStatement.setString(2, oneMonthAgoDate);
-
             ResultSet rs = sqlStatement.executeQuery();
+
             return convertToJson(rs);
         });
 
@@ -67,6 +67,7 @@ public class App {
             JSONObject body = new JSONObject(req.body());
             String symptoms = body.getString("symptoms").trim();
             String[] symptomsAsArray = symptoms.split(",");
+            System.out.println(symptoms);
             String date = body.getString("date");
 
             dbInsert(symptomsAsArray, date);
@@ -79,8 +80,8 @@ public class App {
         String sqlStatement = "INSERT OR IGNORE INTO symptoms VALUES(?, ?)";
         PreparedStatement statement = connection.prepareStatement(sqlStatement);
         for (String symptom: symptoms) {
-            statement.setString(1, symptom);
-            statement.setString(2, date);
+            statement.setString(1, date);
+            statement.setString(2, symptom);
             statement.executeUpdate();
         }
 
