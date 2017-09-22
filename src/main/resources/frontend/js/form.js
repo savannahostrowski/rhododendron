@@ -5,30 +5,13 @@
 **/
 
 const formToJSON = elements => {
+    const today = new Date();
 
-    const today = new Date(Date.now());
-    const yyyy = today.getFullYear();
-    const mm = today.getMonth() + 1;
-    const dd = today.getDate();
+    const json = {};
+    json['date'] = today.toISOString().substring(0, 10);
+    json['symptoms'] = elements["symptoms"].split(",");
 
-    const reducerInitialValue = {};
-    reducerInitialValue['date'] = yyyy + "-" + mm + "-" + dd;
-
-    // Called on each element in the array (each field)
-    const aggregateFormData = (data, element) => {
-
-        if (isValidElement(element)) {
-            // Add the current field to the object.
-            data[element.name] = element.value;
-        }
-
-        return data;
-    };
-
-    // Now we reduce by "call"-ing "reduce()" on "elements".
-    const formData = [].reduce.call(elements, aggregateFormData, reducerInitialValue);
-    // The result is then returned for use elsewhere.
-    return formData;
+    return json;
 };
 
 
@@ -42,10 +25,9 @@ const handleFormSubmit = event => {
     http.open("POST", url, true);
 
     //Send the proper header information along with the request
-    http.setRequestHeader("Content-type", "application/json");
+    http.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 
     http.send(JSON.stringify(json));
-
 };
 
 /** Checks that neither the element.name or element.value are empty
@@ -55,7 +37,23 @@ const handleFormSubmit = event => {
  **/
 const isValidElement = element => {
     return element.name && element.value;
-}
+};
 
+const getSymptomData = event => {
+    const today = new Date();
+    today.toISOString().substring(0, 10);
+    const rawDate30 = new Date();
+    rawDate30.setDate(rawDate30.getDate() - 30);
+    const oneMonthAgo = rawDate30.toISOString();
+
+
+    const http = new XMLHttpRequest();
+    const url = "api/get-historical-symptoms?start=" + oneMonthAgo + "&end=" + today;
+    http.open('GET', url, true);
+    http.send();
+
+
+};
 const form = document.getElementsByClassName('symptoms-form')[0];
 form.addEventListener('submit', handleFormSubmit);
+form.addEventListener('submit', getSymptomData);

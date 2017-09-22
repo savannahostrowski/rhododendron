@@ -28,13 +28,13 @@ public class App {
         Spark.staticFileLocation("frontend");
 
         try {
-            connection = DriverManager.getConnection("jdbc:sqlite:/home/savannah/Documents/code/limon/movies.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:rhododendron.db");
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
             System.out.println("Connected to DB successfully");
 
             statement.executeUpdate("DROP TABLE IF EXISTS symptoms");
-            statement.executeUpdate("CREATE TABLE symptoms (date CHAR(8), symptom CHAR(100))");
+            statement.executeUpdate("CREATE TABLE symptoms (date CHAR(10), symptom CHAR(100))");
             System.out.println("DB created");
             System.out.println("DB populated");
 
@@ -44,19 +44,19 @@ public class App {
             System.err.println(e.getMessage());
         }
 
+        Spark.exception(Exception.class, (exception, request, response) -> {
+            exception.printStackTrace();
+        });
+
         //create endpoints for api
         get("/api/get-historical-symptoms", (req, res) -> {
-            Date today = Calendar.getInstance().getTime();
-            Calendar oneMonthAgo = Calendar.getInstance();
-            oneMonthAgo.setTime(new Date());
-            oneMonthAgo.add(Calendar.MONTH, -1);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-            String todayDate = sdf.format(today);
-            String oneMonthAgoDate = sdf.format(oneMonthAgo);
-
-            String historicalQuery = "SELECT * FROM symptoms WHERE date between today = ? AND monthAgo = ?";
+            res.type("application/json");
+            String oneMonthAgoDate = req.params().get("end");
+            String todayDate = req.params().get("end");
+            String historicalQuery = "SELECT * FROM symptoms WHERE date between ? AND ?";
             PreparedStatement sqlStatement = connection.prepareStatement(historicalQuery);
             sqlStatement.setString(1, todayDate);
+            //get dates from javascript
             sqlStatement.setString(2, oneMonthAgoDate);
 
             ResultSet rs = sqlStatement.executeQuery();
@@ -76,12 +76,13 @@ public class App {
             String date = body.getString("date");
 
             dbInsert(symptoms, date);
+            // Return success or error method
             return null;
         });
     }
 
     private static void dbInsert(ArrayList<String> symptomsJson, String date) throws IOException, SQLException {
-        String sqlStatement = "INSERT OR IGNORE INTO movies VALUES(?, ?)";
+        String sqlStatement = "INSERT OR IGNORE INTO symptoms VALUES(?, ?)";
         PreparedStatement statement = connection.prepareStatement(sqlStatement);
         for (String symptomJson: symptomsJson) {
             statement.setString(1, symptomJson);
