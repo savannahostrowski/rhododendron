@@ -9,10 +9,15 @@ import java.sql.DriverManager;
 
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.json.*;
+import spark.Spark;
+import sun.java2d.pipe.SpanShapeRenderer;
 
 import static spark.Spark.*;
 
@@ -20,6 +25,7 @@ public class App {
     private static Connection connection = null;
 
     public static void main(String[] args) {
+        Spark.staticFileLocation("frontend");
 
         try {
             connection = DriverManager.getConnection("jdbc:sqlite:/home/savannah/Documents/code/limon/movies.db");
@@ -28,7 +34,7 @@ public class App {
             System.out.println("Connected to DB successfully");
 
             statement.executeUpdate("DROP TABLE IF EXISTS symptoms");
-            statement.executeUpdate("CREATE TABLE symptoms (date INT(8), symptom CHAR(100)");
+            statement.executeUpdate("CREATE TABLE symptoms (date CHAR(8), symptom CHAR(100))");
             System.out.println("DB created");
             System.out.println("DB populated");
 
@@ -40,10 +46,20 @@ public class App {
 
         //create endpoints for api
         get("/api/get-historical-symptoms", (req, res) -> {
-            Statement statement = connection.createStatement();
-            statement.setQueryTimeout(30);
-            String orderSQLStatement = "SELECT * FROM symptoms WHERE date BETWEEN 'now' AND 'start of month'";
-            ResultSet rs = statement.executeQuery(orderSQLStatement);
+            Date today = Calendar.getInstance().getTime();
+            Calendar oneMonthAgo = Calendar.getInstance();
+            oneMonthAgo.setTime(new Date());
+            oneMonthAgo.add(Calendar.MONTH, -1);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            String todayDate = sdf.format(today);
+            String oneMonthAgoDate = sdf.format(oneMonthAgo);
+
+            String historicalQuery = "SELECT * FROM symptoms WHERE date between today = ? AND monthAgo = ?";
+            PreparedStatement sqlStatement = connection.prepareStatement(historicalQuery);
+            sqlStatement.setString(1, todayDate);
+            sqlStatement.setString(2, oneMonthAgoDate);
+
+            ResultSet rs = sqlStatement.executeQuery();
             return convertToJson(rs);
         });
 
@@ -59,7 +75,8 @@ public class App {
 
             String date = body.getString("date");
 
-            return dbInsert(symptoms, date);
+            dbInsert(symptoms, date);
+            return null;
         });
     }
 
@@ -78,7 +95,7 @@ public class App {
         ArrayList<String> output = new ArrayList<>();
         try {
             while(rs.next()) {
-
+                output.add(rs.toString());
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -62,8 +62,6 @@ div, h1, h2, h3, h4 {
 }
 .feeling-good, .feeling-bad {
     display: inline-block;
-    *display: inline;
-    zoom: 1;
     vertical-align: top;
     width: 50%;
     cursor: pointer;

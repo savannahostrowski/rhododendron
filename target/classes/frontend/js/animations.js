@@ -15,9 +15,14 @@ $(document).ready(function() {
     });
 
     $('.back-to-home').click(function() {
-        $('.trends').fadeOut('slow');
         $('.initial').show().fadeIn('slow');
-
+        $('.trends').fadeOut('slow');
     });
+
+    $('.input-button').click(function() {
+        $('.trends').fadeIn('slow');
+        $('.symptoms').fadeOut('slow');
+
+    })
 
 });
