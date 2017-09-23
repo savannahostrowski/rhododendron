@@ -51,15 +51,15 @@ public class App {
         //create endpoints for api
         get("/api/get-historical-symptoms", (req, res) -> {
             res.type("application/json");
-            String oneMonthAgoDate = req.params().get("start");
-            String todayDate = req.params().get("end");
+            String oneMonthAgoDate = req.queryParams("start");
+            String todayDate = req.queryParams("end");
             String historicalQuery = "SELECT * FROM symptoms WHERE date between ? AND ?";
             PreparedStatement sqlStatement = connection.prepareStatement(historicalQuery);
-            sqlStatement.setString(1, todayDate);
+            sqlStatement.setString(1, oneMonthAgoDate);
             //get dates from javascript
-            sqlStatement.setString(2, oneMonthAgoDate);
+            sqlStatement.setString(2, todayDate);
             ResultSet rs = sqlStatement.executeQuery();
-
+            String x = sqlStatement.toString();
             return convertToJson(rs);
         });
 
