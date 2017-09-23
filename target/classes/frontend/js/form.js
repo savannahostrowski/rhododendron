@@ -28,10 +28,15 @@ const addSymptomData = event => {
     http.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 
     http.send(JSON.stringify(json));
+    http.onreadystatechange = function () {
+        if(http.readyState === XMLHttpRequest.DONE && http.status === 200) {
+            getSymptomData();
+        }
+
+    };
 };
 
-const getSymptomData = event => {
-    event.preventDefault();
+const getSymptomData = () => {
 
     // Generating today's date in YYYY-MM-DD format
     const now = new Date();
@@ -53,7 +58,5 @@ const getSymptomData = event => {
 const form = document.getElementsByClassName('symptoms-form')[0];
 
 form.addEventListener('submit', addSymptomData);
-form.addEventListener('submit', getSymptomData);
-
 
 

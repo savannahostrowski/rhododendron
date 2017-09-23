@@ -91,7 +91,7 @@ public class App {
         ArrayList<String> output = new ArrayList<>();
         try {
             while(rs.next()) {
-                output.add(rs.toString());
+                output.add(rs.getString("symptom"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
