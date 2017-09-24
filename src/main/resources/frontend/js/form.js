@@ -4,6 +4,7 @@
  * @return {Object} form data as an object literal
 **/
 
+
 const formToJSON = elements => {
     const today = new Date();
 
@@ -53,6 +54,44 @@ const getSymptomData = () => {
     const url = "api/get-historical-symptoms?start=" + oneMonthAgo + "&end=" + today;
     http.open('GET', url, true);
     http.send();
+
+    http.onreadystatechange = function () {
+        if(http.readyState === XMLHttpRequest.DONE && http.status === 200) {
+            buildVisualizationTable(JSON.parse(http.responseText));
+
+        }
+
+    };
+
+};
+
+const buildVisualizationTable = json => {
+    const visualizationDiv = document.getElementById("visualization");
+    const table = document.createElement("table");
+
+    for (let key in json) {
+        let tr = document.createElement("tr");
+        let td = document.createElement("td");
+        td.appendChild(document.createTextNode(key));
+        tr.appendChild(td);
+
+        let symptoms = json[key];
+
+        for (let symptom in symptoms) {
+            let td = document.createElement("td");
+            td.appendChild(document.createTextNode(symptom));
+            tr.appendChild(td);
+        }
+
+        table.appendChild(tr);
+
+
+    }
+
+    visualizationDiv.appendChild(table);
+
+
+
 };
 
 const form = document.getElementsByClassName('symptoms-form')[0];
