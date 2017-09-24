@@ -10,10 +10,8 @@ import java.sql.DriverManager;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.*;
 import java.util.Date;
-import java.util.List;
 
 import org.json.*;
 import spark.Spark;
@@ -88,16 +86,23 @@ public class App {
     }
 
     private static String convertToJson(ResultSet rs) {
-        ArrayList<String> output = new ArrayList<>();
+        HashMap<String, ArrayList<String>> json = new HashMap<>();
         try {
             while(rs.next()) {
-                output.add(rs.getString("symptom"));
+                String date = rs.getString("date");
+                if (json.containsKey(date)) {
+                    json.get(date).add(rs.getString("symptom"));
+                } else {
+                    ArrayList<String> symptoms = new ArrayList<>();
+                    symptoms.add(rs.getString("symptom"));
+                    json.put(date, symptoms);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         Gson gson = new GsonBuilder().create();
-        return gson.toJson(output);
+        return gson.toJson(json);
     }
 
 
