@@ -68,30 +68,35 @@ const getSymptomData = () => {
 const buildVisualizationTable = json => {
     const visualizationDiv = document.getElementById("visualization");
     const table = document.createElement("table");
+    table.setAttribute("class", "visualization-table");
+
+    let headerRow = document.createElement("tr");
+    let dateCol = document.createElement("td");
+    let symptomCol = document.createElement("td");
+
+    dateCol.appendChild(document.createTextNode("Date"));
+    symptomCol.appendChild(document.createTextNode("Symptoms"));
+
+    headerRow.appendChild(dateCol);
+    headerRow.append(symptomCol);
+    table.appendChild(headerRow);
 
     for (let key in json) {
-        let tr = document.createElement("tr");
-        let td = document.createElement("td");
-        td.appendChild(document.createTextNode(key));
-        tr.appendChild(td);
+        let row = document.createElement("tr");
+        let dateNode = document.createElement("td");
+        dateNode.appendChild(document.createTextNode(key));
+        row.appendChild(dateNode);
 
         let symptoms = json[key];
 
-        for (let symptom in symptoms) {
-            let td = document.createElement("td");
-            td.appendChild(document.createTextNode(symptom));
-            tr.appendChild(td);
-        }
+        let symptomsNode = document.createElement("td");
+        symptomsNode.appendChild(document.createTextNode(symptoms));
 
-        table.appendChild(tr);
-
-
+        row.append(symptomsNode);
+        table.appendChild(row);
     }
 
     visualizationDiv.appendChild(table);
-
-
-
 };
 
 const form = document.getElementsByClassName('symptoms-form')[0];

@@ -201,7 +201,7 @@ div, h1, h2, h3, h4 {
 .trends h2 {
     letter-spacing: 1px;
     color: #07889B;
-    padding-top: 50px;
+    padding: 50px 0;
 
 }
 
@@ -221,4 +221,25 @@ div, h1, h2, h3, h4 {
 .back-to-home:hover {
     border-color: #66B9BF;
     color: #66B9BF;
+}
+
+
+.visualization-table {
+    margin: 0 auto;
+    background-color: #66B9BF;
+
+}
+
+.visualization-table td:first-child {
+    font-weight: bold;
+}
+
+td, table {
+    border: solid 2px #E37222;
+    border-collapse: collapse;
+
+}
+
+td {
+    padding: 5px;
 }
