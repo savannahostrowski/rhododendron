@@ -57,7 +57,9 @@ const getSymptomData = () => {
 
     http.onreadystatechange = function () {
         if(http.readyState === XMLHttpRequest.DONE && http.status === 200) {
-            buildVisualizationTable(JSON.parse(http.responseText));
+            const json = JSON.parse(http.responseText);
+            const sortedKeys = getSortedKeys(json);
+            buildVisualizationTable(sortedKeys, json);
 
         }
 
@@ -65,7 +67,19 @@ const getSymptomData = () => {
 
 };
 
-const buildVisualizationTable = json => {
+const getSortedKeys = json => {
+    let keys = [];
+    for (let key in json) {
+        if(json.hasOwnProperty(key)) {
+            keys.push(key);
+        }
+    }
+
+    return keys.sort();
+};
+
+
+const buildVisualizationTable = (sortedKeys, json) => {
     const visualizationDiv = document.getElementById("visualization");
     const table = document.createElement("table");
     table.setAttribute("class", "visualization-table");
@@ -81,7 +95,9 @@ const buildVisualizationTable = json => {
     headerRow.append(symptomCol);
     table.appendChild(headerRow);
 
-    for (let key in json) {
+    for (let i = 0; i < sortedKeys.length; i++) {
+        let key = sortedKeys[i];
+
         let row = document.createElement("tr");
         let dateNode = document.createElement("td");
         dateNode.appendChild(document.createTextNode(key));

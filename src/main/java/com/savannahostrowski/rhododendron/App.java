@@ -28,7 +28,6 @@ public class App {
             statement.setQueryTimeout(30);
             System.out.println("Connected to DB successfully");
 
-            statement.executeUpdate("DROP TABLE IF EXISTS symptoms");
             statement.executeUpdate("CREATE TABLE symptoms (date CHAR(10), symptom CHAR(100))");
             System.out.println("DB created");
             System.out.println("DB populated");

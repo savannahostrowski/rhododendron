@@ -230,6 +230,11 @@ div, h1, h2, h3, h4 {
 
 }
 
+.visualization-table tr:first-child {
+    font-weight: bolder;
+    text-decoration: underline;
+}
+
 .visualization-table td:first-child {
     font-weight: bold;
 }
