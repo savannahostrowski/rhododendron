@@ -20,17 +20,21 @@ public class App {
     private static Connection connection = null;
 
     public static void main(String[] args) {
-        Spark.staticFileLocation("frontend");
+        Spark.staticFileLocation("/frontend");
 
         try {
-            connection = DriverManager.getConnection("jdbc:sqlite:rhododendron.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:/root/rhododendron/rhododendron.db");
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
-            System.out.println("Connected to DB successfully");
 
-            statement.executeUpdate("CREATE TABLE symptoms (date CHAR(10), symptom CHAR(100))");
-            System.out.println("DB created");
-            System.out.println("DB populated");
+            DatabaseMetaData md = connection.getMetaData();
+            ResultSet tables = md.getTables(null, null, "symptoms", null);
+            if (!tables.next()) {
+                statement.executeUpdate("CREATE TABLE symptoms (date CHAR(10), symptom CHAR(100))");
+                System.out.println("DB created");
+            }
+
+            System.out.println("Connected to DB successfully");
 
         } catch (SQLException e) {
             // if the error message is "out of memory",

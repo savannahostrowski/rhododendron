@@ -18,6 +18,8 @@ $(document).ready(function() {
     $('.back-to-home').click(function() {
         $('.initial').show().fadeIn('slow');
         $('.trends').fadeOut('slow');
+        $('table').remove();
+
     });
 
     $('.input-button').click(function() {
