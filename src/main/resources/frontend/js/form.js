@@ -115,8 +115,10 @@ const buildVisualizationTable = (sortedKeys, json) => {
     visualizationDiv.appendChild(table);
 };
 
-const form = document.getElementsByClassName('symptoms-form')[0];
+const form = document.getElementsByClassName("symptoms-form")[0];
+const historyButton = document.getElementsByClassName("symptom-history")[0];
 
-form.addEventListener('submit', addSymptomData);
+form.addEventListener("submit", addSymptomData);
+historyButton.addEventListener("click", getSymptomData);
 
 

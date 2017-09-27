@@ -30,7 +30,8 @@ public class App {
             DatabaseMetaData md = connection.getMetaData();
             ResultSet tables = md.getTables(null, null, "symptoms", null);
             if (!tables.next()) {
-                statement.executeUpdate("CREATE TABLE symptoms (date CHAR(10), symptom CHAR(100))");
+                statement.executeUpdate("CREATE TABLE symptoms (date CHAR(10)," +
+                        "symptom CHAR(100), PRIMARY KEY (date, symptom))");
                 System.out.println("DB created");
             }
 
@@ -69,7 +70,6 @@ public class App {
             String date = body.getString("date");
 
             dbInsert(symptomsAsArray, date);
-//            // Return success or error method
             return true;
         });
     }
