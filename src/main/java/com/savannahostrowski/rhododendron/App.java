@@ -20,10 +20,10 @@ public class App {
     private static Connection connection = null;
 
     public static void main(String[] args) {
-        Spark.staticFileLocation("/frontend");
+        Spark.staticFileLocation("frontend");
 
         try {
-            connection = DriverManager.getConnection("jdbc:sqlite:/root/rhododendron/rhododendron.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:rhododendron.db");
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
 
@@ -78,6 +78,9 @@ public class App {
         String sqlStatement = "INSERT OR IGNORE INTO symptoms VALUES(?, ?)";
         PreparedStatement statement = connection.prepareStatement(sqlStatement);
         for (String symptom: symptoms) {
+            if (symptom.equals("")) {
+                break;
+            }
             statement.setString(1, date);
             statement.setString(2, symptom);
             statement.executeUpdate();

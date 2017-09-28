@@ -84,9 +84,9 @@ const buildVisualizationTable = (sortedKeys, json) => {
     const table = document.createElement("table");
     table.setAttribute("class", "visualization-table");
 
-    let headerRow = document.createElement("tr");
-    let dateCol = document.createElement("td");
-    let symptomCol = document.createElement("td");
+    const headerRow = document.createElement("tr");
+    const dateCol = document.createElement("td");
+    const symptomCol = document.createElement("td");
 
     dateCol.appendChild(document.createTextNode("Date"));
     symptomCol.appendChild(document.createTextNode("Symptoms"));
