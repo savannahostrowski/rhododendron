@@ -64,9 +64,9 @@ public class App {
 
         post("/api/add-symptoms", (req, res) -> {
             JSONObject body = new JSONObject(req.body());
+            // .trim() to remove whitespace from symptom strings
             String symptoms = body.getString("symptoms").trim();
             String[] symptomsAsArray = symptoms.split(",");
-            System.out.println(symptoms);
             String date = body.getString("date");
 
             dbInsert(symptomsAsArray, date);

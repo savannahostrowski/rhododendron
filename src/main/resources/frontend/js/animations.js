@@ -5,6 +5,7 @@ $(document).ready(function() {
     });
 
     $('.feeling-bad').click(function() {
+        // resets the form data
         $('.input-area').val('');
         $('.symptoms').show().fadeIn('slow');
         $('.initial').fadeOut('slow');
@@ -18,6 +19,7 @@ $(document).ready(function() {
     $('.back-to-home').click(function() {
         $('.initial').show().fadeIn('slow');
         $('.trends').fadeOut('slow');
+        // remove table div when exiting the visualization
         $('table').remove();
 
     });

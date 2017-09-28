@@ -5,7 +5,7 @@
 **/
 
 
-const formToJSON = elements => {
+const formToJSON = () => {
     const today = new Date();
 
     const json = {};
@@ -17,10 +17,12 @@ const formToJSON = elements => {
 
 
 const addSymptomData = event => {
+    // prevents form from submitting as normal (reload)
     event.preventDefault();
 
-    // Call our function to get the form data.
-    const json = formToJSON(form.elements);
+    // Get form data in JSON format
+    const json = formToJSON();
+    // Set up http request (POST)
     const http = new XMLHttpRequest();
     const url = "api/add-symptoms";
     http.open("POST", url, true);
