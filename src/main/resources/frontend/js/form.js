@@ -69,8 +69,45 @@ const getSymptomData = () => {
 
 };
 
+const getMostCommon = () => {
+    const http = new XMLHttpRequest();
+    const url = "api/top-two-symptoms";
+    http.open('GET', url, true);
+    http.send();
+
+    http.onreadystatechange = function () {
+        if(http.readyState === XMLHttpRequest.DONE && http.status === 200) {
+            const json = JSON.parse(http.responseText);
+            const mostCommonDiv = document.getElementsByClassName("most-common")[0];
+            for (let key in json) {
+                const symptomSpan = document.createElement("span");
+                symptomSpan.setAttribute("class", "common-symptom");
+                symptomSpan.innerHTML = json[key];
+                mostCommonDiv.appendChild(symptomSpan);
+
+                let clickCount = 0;
+
+                mostCommonDiv.addEventListener("click", function(e) {
+                    clickCount += 1;
+                });
+                
+                symptomSpan.addEventListener("click", function(e) {
+                    if (clickCount === 0) {
+                        document.getElementById("symptoms-list").value += this.textContent;
+                    } else {
+                        document.getElementById("symptoms-list").value += ("," + this.textContent);
+                    }
+                });
+            }
+
+
+
+        }
+    }
+};
+
 const getSortedKeys = json => {
-    let keys = [];
+    const keys = [];
     for (let key in json) {
         if(json.hasOwnProperty(key)) {
             keys.push(key);
@@ -98,16 +135,16 @@ const buildVisualizationTable = (sortedKeys, json) => {
     table.appendChild(headerRow);
 
     for (let i = 0; i < sortedKeys.length; i++) {
-        let key = sortedKeys[i];
+        const key = sortedKeys[i];
 
-        let row = document.createElement("tr");
-        let dateNode = document.createElement("td");
+        const row = document.createElement("tr");
+        const dateNode = document.createElement("td");
         dateNode.appendChild(document.createTextNode(key));
         row.appendChild(dateNode);
 
-        let symptoms = json[key];
+        const symptoms = json[key];
 
-        let symptomsNode = document.createElement("td");
+        const symptomsNode = document.createElement("td");
         symptomsNode.appendChild(document.createTextNode(symptoms));
 
         row.append(symptomsNode);
@@ -117,10 +154,18 @@ const buildVisualizationTable = (sortedKeys, json) => {
     visualizationDiv.appendChild(table);
 };
 
+
+
 const form = document.getElementsByClassName("symptoms-form")[0];
 const historyButton = document.getElementsByClassName("symptom-history")[0];
+const sadFace = document.getElementsByClassName("feeling-bad")[0];
 
 form.addEventListener("submit", addSymptomData);
 historyButton.addEventListener("click", getSymptomData);
+sadFace.addEventListener("click", getMostCommon);
+
+
+
+
 
 

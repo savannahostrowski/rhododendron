@@ -62,6 +62,15 @@ public class App {
             return convertToJson(rs);
         });
 
+        get("/api/top-two-symptoms", (req, res) -> {
+            res.type("application/json");
+            String mostCommonQuery = "SELECT date, symptom FROM symptoms GROUP BY symptom ORDER BY COUNT(*) DESC LIMIT 3";
+            PreparedStatement sqlStatement = connection.prepareStatement(mostCommonQuery);
+            ResultSet rs = sqlStatement.executeQuery();
+            return convertToJson(rs);
+
+        });
+
         post("/api/add-symptoms", (req, res) -> {
             JSONObject body = new JSONObject(req.body());
             // .trim() to remove whitespace from symptom strings
@@ -94,10 +103,10 @@ public class App {
             while(rs.next()) {
                 String date = rs.getString("date");
                 if (json.containsKey(date)) {
-                    json.get(date).add(rs.getString("symptom"));
+                    json.get(date).add(" " + rs.getString("symptom"));
                 } else {
                     ArrayList<String> symptoms = new ArrayList<>();
-                    symptoms.add(rs.getString("symptom"));
+                    symptoms.add(" " + rs.getString("symptom"));
                     json.put(date, symptoms);
                 }
             }
