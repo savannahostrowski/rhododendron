@@ -14,6 +14,7 @@ $(document).ready(function() {
     $('.symptom-history').click(function() {
         $('.trends').show().fadeIn('slow');
         $('.no-symptoms').fadeOut('slow');
+
     });
 
     $('.back-to-home').click(function() {
@@ -25,6 +26,7 @@ $(document).ready(function() {
     });
 
     $('.input-button').click(function() {
+        $('.common-symptom').remove();
         $('.trends').show().fadeIn('slow');
         $('.symptoms').fadeOut('slow');
 
