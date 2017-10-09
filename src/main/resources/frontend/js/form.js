@@ -95,7 +95,7 @@ const getMostCommon = () => {
                     if (clickCount === 0) {
                         document.getElementById("symptoms-list").value += this.textContent;
                     } else {
-                        document.getElementById("symptoms-list").value += ("," + this.textContent);
+                        document.getElementById("symptoms-list").value += (", " + this.textContent);
                     }
                 });
             }

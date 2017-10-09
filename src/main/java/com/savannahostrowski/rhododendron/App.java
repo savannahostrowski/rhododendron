@@ -59,12 +59,12 @@ public class App {
             sqlStatement.setString(2, todayDate);
             ResultSet rs = sqlStatement.executeQuery();
             String x = sqlStatement.toString();
-            return convertToJson(rs);
+            return convertToJsonDate(rs);
         });
 
         get("/api/top-two-symptoms", (req, res) -> {
             res.type("application/json");
-            String mostCommonQuery = "SELECT date, symptom FROM symptoms GROUP BY symptom ORDER BY COUNT(*) DESC LIMIT 3";
+            String mostCommonQuery = "SELECT symptom FROM symptoms GROUP BY symptom ORDER BY COUNT(*) DESC LIMIT 3";
             PreparedStatement sqlStatement = connection.prepareStatement(mostCommonQuery);
             ResultSet rs = sqlStatement.executeQuery();
             return convertToJson(rs);
@@ -97,7 +97,7 @@ public class App {
 
     }
 
-    private static String convertToJson(ResultSet rs) {
+    private static String convertToJsonDate(ResultSet rs) {
         HashMap<String, ArrayList<String>> json = new HashMap<>();
         try {
             while(rs.next()) {
@@ -109,6 +109,21 @@ public class App {
                     symptoms.add(" " + rs.getString("symptom"));
                     json.put(date, symptoms);
                 }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        Gson gson = new GsonBuilder().create();
+        return gson.toJson(json);
+    }
+
+    private static String convertToJson(ResultSet rs) {
+        HashMap<Integer, String> json = new HashMap<>();
+        int counter = 0;
+        try {
+            while(rs.next()) {
+                json.put(counter, rs.getString("symptom"));
+                counter++;
             }
         } catch (SQLException e) {
             e.printStackTrace();
